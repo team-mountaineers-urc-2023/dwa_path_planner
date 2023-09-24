@@ -1,0 +1,50 @@
+<launch>
+	<!-- planner args -->
+	<arg name="current_waypoint_topic" default="/current_waypoint"/>
+	<arg name="local_position_topic" default="/current_pose"/>
+	<arg name="cmd_vel_topic" default="/cmd_vel"/>
+	<arg name="current_status_topic" default="/planner_status"/>
+	<arg name="enabled_service" default="/planner_enabled"/>
+	<arg name="precision_service" default="/planner_precision"/>
+
+	<!-- other args -->
+	<!-- TODO <arg name="angle_threshold" default="45"/> -->
+	<arg name="default_precision" default="0.5"/>
+	<arg name="update_frequency" default="10"/>
+	<arg name="local_waypoint_distance" default="3"/>
+	<arg name="robot_frame" default="robot_footprint"/>
+	<!-- TODO <arg name="not_moving_threshold" default=".25"/> -->
+	<!-- TODO <arg name="not_moving_delay" default="5"/> -->
+	<!-- TODO <arg name="stuck_delay" default="3"/> -->
+
+	<arg name="costmap_params" default="$(find dwa_path_planner)/params/costmap_params.yaml"/>
+	<arg name="dwa_params" default="$(find dwa_path_planner)/params/dwa_params.yaml"/>
+	<arg name="odom_topic" default="/odom"/>
+
+	<!-- load param files -->
+
+	<remap from="odom" to="$(arg odom_topic)"/>
+
+	<node pkg="dwa_path_planner" name="dwa_path_planner"
+	type="dwa_path_planner_node" output="log" respawn="false">
+
+		<rosparam file="$(arg costmap_params)" command="load" ns="/dwa_path_planner/costmap" />
+		<rosparam file="$(arg dwa_params)" command="load" ns="/dwa_path_planner/dwa_node"/>
+
+		<param name="current_waypoint_topic" value="$(arg current_waypoint_topic)"/>
+		<param name="cmd_vel_topic" value="$(arg cmd_vel_topic)"/>
+		<param name="local_position_topic" value="$(arg local_position_topic)"/>
+		<param name="current_status_topic" value="$(arg current_status_topic)"/>
+		<param name="enabled_service" value="$(arg enabled_service)"/>
+		<param name="precision_service" value="$(arg precision_service)"/>
+
+		<!-- <param name="angle_threshold" value="$(arg angle_threshold)"/> -->
+		<param name="default_precision" value="$(arg default_precision)"/>
+		<param name="update_frequency" value="$(arg update_frequency)"/>
+		<param name="local_waypoint_distance" value="$(arg local_waypoint_distance)"/>
+		<param name="robot_frame" value="$(arg robot_frame)"/>
+		<!-- <param name="not_moving_threshold" value="$(arg not_moving_threshold)"/> -->
+		<!-- <param name="not_moving_delay" value="$(arg not_moving_delay)"/> -->
+		<!-- <param name="stuck_delay" value="$(arg stuck_delay)"/> -->
+	</node>
+</launch>
